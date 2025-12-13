@@ -1,5 +1,4 @@
 from exceptions import InvalidMove
-from texttable import Texttable
 
 
 class Board:
@@ -37,15 +36,3 @@ class Board:
 
     def get_board(self):
         return self.__board
-
-    def __str__(self):
-        """
-        Returns the board as a texttable.
-        :return: the board as a texttable.
-        """
-        board = self.__board
-        show = Texttable()
-        show.add_row([0, 1, 2, 3, 4, 5, 6])
-        for row in board:
-            show.add_row(row)
-        return show.draw()

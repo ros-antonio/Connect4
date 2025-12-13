@@ -1,12 +1,10 @@
-"""from ui.ui import Ui"""
 from ui.Gui import Gui
 
 
 def main():
-    """ ui = Ui()
-     ui.start()"""
     ui = Gui()
     ui.start()
 
 
-main()
+if __name__ == "__main__":
+    main()

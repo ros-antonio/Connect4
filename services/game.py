@@ -105,11 +105,5 @@ class Game:
         """
         self.__current_player = '\U0001F7E1' if self.__current_player == '\U0001F534' else '\U0001F534'
 
-    def get_current_player(self):
-        return self.__current_player
-
     def get_board(self):
         return self.__board.get_board()
-
-    def get_board_show(self):
-        return str(self.__board)
