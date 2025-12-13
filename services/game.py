@@ -135,6 +135,11 @@ class Game:
         # 1. Get valid locations
         valid_locations = [c for c in range(7) if self.__board.get_board()[0][c] == ' ']
 
+        if self.__has_winning_position(self.__computer_color):
+            return 1000000 + depth, None
+        elif self.__has_winning_position('\U0001F534'):
+            return -1000000 - depth, None
+
         # 2. Check Terminal States (Win/Draw) or Depth Limit
         if depth == 0 or len(valid_locations) == 0:
             return self.__evaluate_board(), None
@@ -255,6 +260,36 @@ class Game:
                 score -= 80
 
         return score
+
+    def __has_winning_position(self, color):
+        """Check if the given color has 4 in a row anywhere on the board."""
+        board = self.__board.get_board()
+
+        # Check horizontal
+        for r in range(6):
+            for c in range(4):
+                if all(board[r][c + i] == color for i in range(4)):
+                    return True
+
+        # Check vertical
+        for r in range(3):
+            for c in range(7):
+                if all(board[r + i][c] == color for i in range(4)):
+                    return True
+
+        # Check diagonal /
+        for r in range(3):
+            for c in range(4):
+                if all(board[r + i][c + i] == color for i in range(4)):
+                    return True
+
+        # Check diagonal \
+        for r in range(3, 6):
+            for c in range(4):
+                if all(board[r - i][c + i] == color for i in range(4)):
+                    return True
+
+        return False
 
     def __switch_player(self):
         """
