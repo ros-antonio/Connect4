@@ -14,6 +14,7 @@ class Board:
         :param column: The column on which the piece has to be put.
         :param piece: The piece to be put on the board. (red dot or yellow dot)
         :raises InvalidMove: If the column is full or out of bounds.
+        :return: The row on which the piece has been placed.
         """
         if column < 0 or column >= 7:
             raise InvalidMove('Out of bounds. Please choose a column between 0 and 6.\n')
@@ -21,7 +22,7 @@ class Board:
         for row in reversed(range(6)):
             if self.__board[row][column] == ' ':
                 self.__board[row][column] = piece
-                return
+                return row
         raise InvalidMove('Column is full. Please choose another column.\n')
 
     def remove_piece(self, column):

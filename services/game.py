@@ -12,26 +12,41 @@ class Game:
         self.__board = Board()
         self.__current_player = '\U0001F534'
 
-    def check_winner(self, color):
+    def check_winner(self, color, last_row, last_col):
         """
-        Checks if the player with the given color has won the game.
+        Checks if the last move at (last_row, last_col) created a win.
         :param color: The color of the player given as a red dot or yellow dot.
+        :param last_row: The row of the last move.
+        :param last_col: The column of the last move.
         :return: True if the player has won the game, False otherwise.
         """
         board = self.__board.get_board()
-        for i in range(6):
-            for j in range(7):
-                if board[i][j] == color:
-                    if i + 3 < 6 and board[i + 1][j] == color and board[i + 2][j] == color and board[i + 3][j] == color:
-                        return True
-                    if j + 3 < 7 and board[i][j + 1] == color and board[i][j + 2] == color and board[i][j + 3] == color:
-                        return True
-                    if i + 3 < 6 and j + 3 < 7 and board[i + 1][j + 1] == color and board[i + 2][j + 2] == color and \
-                            board[i + 3][j + 3] == color:
-                        return True
-                    if i + 3 < 6 and j - 3 >= 0 and board[i + 1][j - 1] == color and board[i + 2][j - 2] == color and \
-                            board[i + 3][j - 3] == color:
-                        return True
+
+        def count_direction(dr, dc):
+            count = 0
+            # 1. Look Forward
+            r, c = last_row + dr, last_col + dc
+            while 0 <= r < 6 and 0 <= c < 7 and board[r][c] == color:
+                count += 1
+                r += dr
+                c += dc
+
+            # 2. Look Backward
+            r, c = last_row - dr, last_col - dc
+            while 0 <= r < 6 and 0 <= c < 7 and board[r][c] == color:
+                count += 1
+                r -= dr
+                c -= dc
+
+            return count
+
+        # Check all four directions
+        directions = [(0, 1), (1, 0), (1, 1), (1, -1)]
+
+        for dr, dc in directions:
+            if count_direction(dr, dc) >= 3:
+                return True
+
         return False
 
     def is_full(self):
@@ -52,9 +67,11 @@ class Game:
         :param column: The column on which the move has to be made.
         :return: True if the player has won the game, False otherwise.
         """
-        self.__board.place_piece(column, self.__current_player)
-        if self.check_winner(self.__current_player):
+        row = self.__board.place_piece(column, self.__current_player)
+
+        if self.check_winner(self.__current_player, row, column):
             return True
+
         self.__switch_player()
         return False
 
@@ -68,8 +85,8 @@ class Game:
         """
         for column in range(7):
             try:
-                self.__board.place_piece(column, self.__current_player)
-                if self.check_winner(self.__current_player):
+                row = self.__board.place_piece(column, self.__current_player)
+                if self.check_winner(self.__current_player, row, column):
                     return True
                 self.__board.remove_piece(column)
             except InvalidMove:
@@ -78,8 +95,8 @@ class Game:
         opponent = '\U0001F534' if self.__current_player == '\U0001F7E1' else '\U0001F7E1'
         for column in range(7):
             try:
-                self.__board.place_piece(column, opponent)
-                if self.check_winner(opponent):
+                row = self.__board.place_piece(column, opponent)
+                if self.check_winner(opponent, row, column):
                     self.__board.remove_piece(column)
                     self.__board.place_piece(column, self.__current_player)
                     self.__switch_player()
@@ -91,8 +108,8 @@ class Game:
         while True:
             column = randint(0, 6)
             try:
-                self.__board.place_piece(column, self.__current_player)
-                if self.check_winner(self.__current_player):
+                row = self.__board.place_piece(column, self.__current_player)
+                if self.check_winner(self.__current_player, row, column):
                     return True
                 self.__switch_player()
                 return False
