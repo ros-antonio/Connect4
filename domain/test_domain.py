@@ -16,21 +16,15 @@ class DomainTest(TestCase):
         self.assertEqual(self.__board.get_board(), new_board)
 
     def test_place_piece_out_of_bounds(self):
-        try:
+        with self.assertRaises(InvalidMove):
             self.__board.place_piece(7, 'red')
-            assert False
-        except InvalidMove:
-            assert True
 
     def test_place_piece_column_full(self):
         for _ in range(6):
             self.__board.place_piece(0, 'red')
 
-        try:
+        with self.assertRaises(InvalidMove):
             self.__board.place_piece(0, 'red')
-            assert False
-        except InvalidMove:
-            assert True
 
     def test_remove_piece(self):
         self.__board.place_piece(0, 'red')
