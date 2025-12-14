@@ -11,7 +11,7 @@ class Game:
     Handles turn management, move validation, win detection, and the AI opponent.
     """
 
-    def __init__(self, difficulty):
+    def __init__(self, difficulty='hard'):
         """
         Initializes the game with a board, players, and difficulty level.
 
