@@ -1,61 +1,181 @@
-from services.game import Game
-from exceptions import InvalidMove
 import tkinter as tk
 from tkinter import messagebox
+from services.game import Game
+from exceptions import InvalidMove
+from domain.board import Board
+
+KEY_PLAYER = 'red'
+KEY_COMPUTER = 'yellow'
+KEY_EMPTY = Board.EMPTY
+
+PIECE_MAP = {
+    KEY_PLAYER: 'red',
+    KEY_COMPUTER: 'yellow',
+    KEY_EMPTY: 'white'
+}
 
 
 class Gui:
     def __init__(self):
-        self.board_labels = None
-        self.buttons = None
-        self.__game = Game()
         self.root = tk.Tk()
         self.root.title("Connect Four")
+        self.root.resizable(False, False)
+
+        self.rows = 6
+        self.cols = 7
+        self.cell_size = 100
+        self.width = self.cols * self.cell_size
+        self.height = self.rows * self.cell_size
+
+        self.difficulty_var = tk.StringVar(value="hard")
+        self.__game = None
+        self.__ghost = None
+
+        self.start_new_game()
+        self.create_menu()
         self.create_widgets()
 
+    def create_menu(self):
+        menubar = tk.Menu(self.root)
+        self.root.config(menu=menubar)
+
+        game_menu = tk.Menu(menubar, tearoff=0)
+        game_menu.add_command(label="New Game", command=self.start_new_game)
+        game_menu.add_separator()
+        game_menu.add_command(label="Exit", command=self.root.quit)
+        menubar.add_cascade(label="Game", menu=game_menu)
+
+        diff_menu = tk.Menu(menubar, tearoff=0)
+        diff_menu.add_radiobutton(label="Easy", variable=self.difficulty_var, value="easy",
+                                  command=self.change_difficulty)
+        diff_menu.add_radiobutton(label="Medium", variable=self.difficulty_var, value="medium",
+                                  command=self.change_difficulty)
+        diff_menu.add_radiobutton(label="Hard", variable=self.difficulty_var, value="hard",
+                                  command=self.change_difficulty)
+        menubar.add_cascade(label="Difficulty", menu=diff_menu)
+
     def create_widgets(self):
-        self.buttons = []
-        for i in range(7):
-            button = tk.Button(self.root, text=f"Column {i}", command=lambda i=i: self.make_move(i))
-            button.grid(row=0, column=i)
-            self.buttons.append(button)
-        self.board_labels = [
-            [tk.Label(self.root, text=" ", font=("Courier", 12), width=4, height=2, borderwidth=2, relief="groove") for
-             _ in range(7)] for _ in range(6)]
-        for i in range(6):
-            for j in range(7):
-                self.board_labels[i][j].grid(row=i + 1, column=j)
+        self.canvas = tk.Canvas(
+            self.root,
+            width=self.width,
+            height=self.height,
+            bg='blue',
+            highlightthickness=0
+        )
+        self.canvas.pack()
+        self.canvas.bind("<Button-1>", self.handle_click)
+        self.canvas.bind("<Motion>", self.__handle_hover)
+        self.canvas.bind("<Leave>", self.__handle_leave)
+        self.draw_board()
+
+    def start_new_game(self):
+        current_diff = self.difficulty_var.get()
+        self.__game = Game(difficulty=current_diff)
+        if hasattr(self, 'canvas'):
+            self.draw_board()
+
+    def change_difficulty(self):
+        new_diff = self.difficulty_var.get()
+        self.__game.set_difficulty(new_diff)
+
+    def draw_board(self):
+        self.canvas.delete("all")
+        self.__ghost = None
+        board = self.__game.get_board()
+
+        for r in range(self.rows):
+            for c in range(self.cols):
+                x0 = c * self.cell_size
+                y0 = r * self.cell_size
+                x1 = x0 + self.cell_size
+                y1 = y0 + self.cell_size
+
+                piece_char = board[r][c]
+                color = PIECE_MAP.get(piece_char, 'white')
+
+                self.canvas.create_oval(
+                    x0 + 10, y0 + 10,
+                    x1 - 10, y1 - 10,
+                    fill=color, outline="black", width=2
+                )
+
+    def handle_click(self, event):
+        column = event.x // self.cell_size
+        self.make_move(column)
 
     def make_move(self, column):
         try:
             win = self.__game.make_move(column)
-            self.update_board()
+            self.draw_board()
+
             if win:
-                messagebox.showinfo("Game Over", "You won!")
-                self.root.quit()
+                self.game_over("You won!")
             elif self.__game.is_full():
-                messagebox.showinfo("Game Over", "It's a draw!")
-                self.root.quit()
+                self.game_over("It's a draw!")
             else:
-                self.computer_move()
-        except InvalidMove as er:
-            messagebox.showerror("Invalid Move", str(er))
+                self.root.after(500, self.computer_move)
+
+        except InvalidMove:
+            pass
 
     def computer_move(self):
         try:
             win = self.__game.computer_move()
-            self.update_board()
-            if win:
-                messagebox.showinfo("Game Over", "Computer won!")
-                self.root.quit()
-        except InvalidMove as er:
-            messagebox.showerror("Invalid Move", str(er))
+            self.draw_board()
 
-    def update_board(self):
+            if win:
+                self.game_over("Computer won!")
+            elif self.__game.is_full():
+                self.game_over("It's a draw!")
+        except InvalidMove as er:
+            print(f"Computer Error: {er}")
+
+    def __handle_hover(self, event):
+        """Calculates where the piece would drop and draws a ghost piece."""
+        col = event.x // self.cell_size
+        if 0 <= col < self.cols:
+            self.__draw_ghost(col)
+
+    def __handle_leave(self, event):
+        """Removes the ghost piece when the mouse leaves the canvas."""
+        if self.__ghost:
+            self.canvas.delete(self.__ghost)
+            self.__ghost = None
+
+    def __draw_ghost(self, col):
+        """Finds the lowest empty row in the column and draws a transparent piece."""
+        if self.__ghost:
+            self.canvas.delete(self.__ghost)
+            self.__ghost = None
+
         board = self.__game.get_board()
-        for i in range(6):
-            for j in range(7):
-                self.board_labels[i][j].config(text=board[i][j])
+        target_row = -1
+
+        for r in reversed(range(self.rows)):
+            if board[r][col] == KEY_EMPTY:
+                target_row = r
+                break
+
+        if target_row != -1:
+            x0 = col * self.cell_size
+            y0 = target_row * self.cell_size
+            x1 = x0 + self.cell_size
+            y1 = y0 + self.cell_size
+
+            self.__ghost = self.canvas.create_oval(
+                x0 + 10, y0 + 10,
+                x1 - 10, y1 - 10,
+                fill="",
+                outline=PIECE_MAP[KEY_PLAYER],
+                width=4
+            )
+
+    def game_over(self, message):
+        answer = messagebox.askyesno("Game Over", f"{message}\nDo you want to play again?")
+        if answer:
+            self.start_new_game()
+        else:
+            self.root.quit()
 
     def start(self):
         self.root.mainloop()
