@@ -10,6 +10,7 @@ A classic Connect Four game implemented in Python using `tkinter`. This project 
     * **Hard:** Uses Minimax with Alpha-Beta pruning to look 6 moves ahead.
 * **Interactive GUI:** * Classic Blue board with Red (Player) and Yellow (Computer) tokens.
     * **Ghost Piece:** Hover over columns to see exactly where your piece will land.
+    * **Move Highlight:** The computer's last move is highlighted with a green contour for better visibility.
     * **Menu Bar:** Change difficulty mid-game or start a new game instantly.
 * **Clean Architecture:** Code is organized into Domain, Services, and UI layers for maintainability.
 * **Robust Testing:** ~100% test coverage on core logic.
