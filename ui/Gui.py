@@ -140,7 +140,10 @@ class Gui:
             elif self.__game.is_full():
                 self.game_over("It's a draw!")
             else:
-                self.root.after(500, self.computer_move)
+                if self.difficulty_var.get() in ["easy", "medium"]:
+                    self.root.after(250, self.computer_move)
+                else:
+                    self.computer_move()
 
         except InvalidMove:
             pass
