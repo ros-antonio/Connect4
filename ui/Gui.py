@@ -98,6 +98,8 @@ class Gui:
         self.__ghost = None
         board = self.__game.get_board()
 
+        last_move = self.__game.get_last_move()
+
         for r in range(self.rows):
             for c in range(self.cols):
                 x0 = c * self.cell_size
@@ -107,6 +109,14 @@ class Gui:
 
                 piece_char = board[r][c]
                 color = PIECE_MAP.get(piece_char, 'white')
+
+                if last_move and (r, c) == last_move:
+                    # Highlight last move with a thicker black outline
+                    self.canvas.create_oval(
+                        x0 + 10, y0 + 10,
+                        x1 - 10, y1 - 10,
+                        fill=color, outline="#00FF00", width=10
+                    )
 
                 self.canvas.create_oval(
                     x0 + 10, y0 + 10,

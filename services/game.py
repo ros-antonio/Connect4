@@ -26,6 +26,8 @@ class Game:
         self.__current_player = self.PLAYER_KEY
         # Ensure valid difficulty, default to 'hard' if invalid
         self.__difficulty = difficulty if difficulty in ['easy', 'medium', 'hard'] else 'hard'
+        # for AI last move tracking
+        self.__last_move = None
 
     def set_difficulty(self, level):
         """
@@ -120,6 +122,9 @@ class Game:
             col = self.__get_hard_move()
 
         row = self.__board.place_piece(col, self.__current_player)
+
+        self.__last_move = (row, col)
+
         if self.check_winner(self.__current_player, row, col):
             return True
         self.__switch_player()
@@ -322,3 +327,6 @@ class Game:
 
     def set_board(self, new_board):
         self.__board.set_board(new_board)
+
+    def get_last_move(self):
+        return self.__last_move
