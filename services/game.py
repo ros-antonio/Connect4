@@ -194,12 +194,6 @@ class Game:
         """
         valid_locations = [c for c in range(7) if self.__board.get_board()[0][c] == Board.EMPTY]
 
-        # Check for terminal states
-        if self.__has_winning_position(self.COMPUTER_KEY):
-            return 1000000 + depth, None  # Favor quicker wins
-        elif self.__has_winning_position(self.PLAYER_KEY):
-            return -1000000 - depth, None  # Disfavor quicker losses
-
         if depth == 0 or len(valid_locations) == 0:
             return self.__evaluate_board(), None
 
@@ -308,28 +302,6 @@ class Game:
         if opp_count == 3 and empty_count == 1: score -= 80
 
         return score
-
-    def __has_winning_position(self, color):
-        """
-        Helper to scan the entire board for a win condition (used by Minimax).
-
-        :param color: The color to check for a winning position.
-        :return: True if a winning position is found, False otherwise.
-        """
-        board = self.__board.get_board()
-        for r in range(6):
-            for c in range(4):
-                if all(board[r][c + i] == color for i in range(4)): return True
-        for r in range(3):
-            for c in range(7):
-                if all(board[r + i][c] == color for i in range(4)): return True
-        for r in range(3):
-            for c in range(4):
-                if all(board[r + i][c + i] == color for i in range(4)): return True
-        for r in range(3, 6):
-            for c in range(4):
-                if all(board[r - i][c + i] == color for i in range(4)): return True
-        return False
 
     def __switch_player(self):
         """
