@@ -347,3 +347,6 @@ class Game:
         :return: The current board as a 2D list.
         """
         return self.__board.get_board()
+
+    def set_board(self, new_board):
+        self.__board.set_board(new_board)
