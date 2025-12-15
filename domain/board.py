@@ -34,3 +34,6 @@ class Board:
 
     def get_board(self):
         return self.__board
+
+    def set_board(self, new_board):
+        self.__board = new_board
