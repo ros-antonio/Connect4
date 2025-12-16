@@ -4,16 +4,12 @@ from services.game import Game
 from exceptions import InvalidMove
 from domain.board import Board
 
-# Constants for piece representation
-KEY_PLAYER = 'red'
-KEY_COMPUTER = 'yellow'
-KEY_EMPTY = Board.EMPTY
-
-# Mapping piece characters to colors
+# Mapping piece values to colors
+# Board.EMPTY = 0 (white), Board.PLAYER = 1 (red), Board.COMPUTER = -1 (yellow)
 PIECE_MAP = {
-    KEY_PLAYER: 'red',
-    KEY_COMPUTER: 'yellow',
-    KEY_EMPTY: 'white'
+    Board.EMPTY: 'white',      # 0
+    Board.PLAYER: 'red',        # 1
+    Board.COMPUTER: 'yellow'    # -1
 }
 
 
@@ -107,11 +103,11 @@ class Gui:
                 x1 = x0 + self.cell_size
                 y1 = y0 + self.cell_size
 
-                piece_char = board[r][c]
-                color = PIECE_MAP.get(piece_char, 'white')
+                piece_value = board[r][c]
+                color = PIECE_MAP.get(piece_value, 'white')
 
                 if last_move and (r, c) == last_move:
-                    # Highlight last move with a thicker black outline
+                    # Highlight last move with a thicker green outline
                     self.canvas.create_oval(
                         x0 + 10, y0 + 10,
                         x1 - 10, y1 - 10,
@@ -183,7 +179,7 @@ class Gui:
         target_row = -1
 
         for r in reversed(range(self.rows)):
-            if board[r][col] == KEY_EMPTY:
+            if board[r][col] == Board.EMPTY:
                 target_row = r
                 break
 
@@ -198,7 +194,7 @@ class Gui:
                 x0 + 10, y0 + 10,
                 x1 - 10, y1 - 10,
                 fill="",
-                outline=PIECE_MAP[KEY_PLAYER],
+                outline=PIECE_MAP[Board.PLAYER],
                 width=4
             )
 

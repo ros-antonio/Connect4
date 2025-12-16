@@ -20,9 +20,9 @@ class Game:
         """
         self.__board = Board()
 
-        # Constants for player representation
-        self.PLAYER_KEY = 'red'
-        self.COMPUTER_KEY = 'yellow'
+        # Constants for player representation (using Board constants)
+        self.PLAYER_KEY = Board.PLAYER  # 1 (red)
+        self.COMPUTER_KEY = Board.COMPUTER  # -1 (yellow)
         self.__current_player = self.PLAYER_KEY
         # Ensure valid difficulty, default to 'hard' if invalid
         self.__difficulty = difficulty if difficulty in ['easy', 'medium', 'hard'] else 'hard'
@@ -38,12 +38,12 @@ class Game:
         if level in ['easy', 'medium', 'hard']:
             self.__difficulty = level
 
-    def check_winner(self, color, last_row, last_col):
+    def check_winner(self, piece, last_row, last_col):
         """
         Checks if the last move created a winning condition (4 in a row).
         Optimized to check only around the last placed piece.
 
-        :param color: The color of the piece just placed.
+        :param piece: The piece value that was just placed (1 for player, -1 for AI).
         :param last_row: The row index of the last placed piece.
         :param last_col: The column index of the last placed piece.
         :return: True if the move resulted in a win, False otherwise.
@@ -52,7 +52,7 @@ class Game:
 
         def count_direction(dr, dc):
             """
-            Counts consecutive pieces of the same color in a given direction from the starting point.
+            Counts consecutive pieces of the same value in a given direction from the starting point.
 
             :param dr: direction row
             :param dc: direction column
@@ -61,14 +61,14 @@ class Game:
             count = 0
             # Check in the positive direction
             r, c = last_row + dr, last_col + dc
-            while 0 <= r < 6 and 0 <= c < 7 and board[r][c] == color:
+            while 0 <= r < 6 and 0 <= c < 7 and board[r][c] == piece:
                 count += 1
                 r += dr
                 c += dc
 
             # Check in the negative direction
             r, c = last_row - dr, last_col - dc
-            while 0 <= r < 6 and 0 <= c < 7 and board[r][c] == color:
+            while 0 <= r < 6 and 0 <= c < 7 and board[r][c] == piece:
                 count += 1
                 r -= dr
                 c -= dc
@@ -249,35 +249,39 @@ class Game:
         Heuristic evaluation function.
         Assigns a score to the board state based on the number of potential winning lines.
 
-        :return:
+        :return: The board evaluation score
         """
         score = 0
         board = self.__board.get_board()
-        my_color = self.COMPUTER_KEY
-        opp_color = self.PLAYER_KEY
+        my_piece = self.COMPUTER_KEY  # -1
+        opp_piece = self.PLAYER_KEY  # 1
 
         # Score center column higher (statistically better position)
         center_array = [row[3] for row in board]
-        center_count = center_array.count(my_color)
+        center_count = center_array.count(my_piece)
         score += center_count * 3
 
         # Score all possible windows of 4
+        # Horizontal
         for r in range(6):
             for c in range(4):
-                score += self.__evaluate_window_optimized(board, r, c, 0, 1, my_color, opp_color)
+                score += self.__evaluate_window_optimized(board, r, c, 0, 1, my_piece, opp_piece)
+        # Vertical
         for c in range(7):
             for r in range(3):
-                score += self.__evaluate_window_optimized(board, r, c, 1, 0, my_color, opp_color)
+                score += self.__evaluate_window_optimized(board, r, c, 1, 0, my_piece, opp_piece)
+        # Diagonal (positive slope)
         for r in range(3):
             for c in range(4):
-                score += self.__evaluate_window_optimized(board, r, c, 1, 1, my_color, opp_color)
+                score += self.__evaluate_window_optimized(board, r, c, 1, 1, my_piece, opp_piece)
+        # Diagonal (negative slope)
         for r in range(3, 6):
             for c in range(4):
-                score += self.__evaluate_window_optimized(board, r, c, -1, 1, my_color, opp_color)
+                score += self.__evaluate_window_optimized(board, r, c, -1, 1, my_piece, opp_piece)
         return score
 
     @staticmethod
-    def __evaluate_window_optimized(board, r, c, dr, dc, color, opp_color):
+    def __evaluate_window_optimized(board, r, c, dr, dc, my_piece, opp_piece):
         """
         Scores a specific window of 4 cells.
 
@@ -286,15 +290,15 @@ class Game:
         :param c: column
         :param dr: direction row
         :param dc: direction column
-        :param color: AI color
-        :param opp_color: Opponent color (player)
+        :param my_piece: AI piece value (-1)
+        :param opp_piece: Opponent piece value (1)
         :return: score for the window
         """
         score = 0
         window = [board[r + i * dr][c + i * dc] for i in range(4)]
-        my_count = window.count(color)
+        my_count = window.count(my_piece)
         empty_count = window.count(Board.EMPTY)
-        opp_count = window.count(opp_color)
+        opp_count = window.count(opp_piece)
 
         if my_count == 4:
             score += 100
@@ -304,7 +308,8 @@ class Game:
             score += 2
 
         # Penalize opponent's potential wins
-        if opp_count == 3 and empty_count == 1: score -= 80
+        if opp_count == 3 and empty_count == 1:
+            score -= 80
 
         return score
 

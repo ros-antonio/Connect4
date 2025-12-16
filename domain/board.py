@@ -1,12 +1,15 @@
 from exceptions import InvalidMove
 
 class Board:
-    # Constant for readability
-    EMPTY = 'empty'
+    # Constants for piece representation
+    # 0 = empty/white, 1 = red/player, -1 = yellow/AI
+    EMPTY = 0
+    PLAYER = 1
+    COMPUTER = -1
 
     def __init__(self):
         """
-        Initializes the board with 6 rows and 7 columns using the EMPTY constant.
+        Initializes the board with 6 rows and 7 columns using the EMPTY constant (0).
         """
         self.__board = [[self.EMPTY for _ in range(7)] for _ in range(6)]
 
