@@ -198,13 +198,16 @@ class Game:
         :return: A tuple of (score, column) representing the best score and corresponding column.
         """
         valid_locations = [c for c in range(7) if self.__board.get_board()[0][c] == Board.EMPTY]
+        # Prioritize center columns for better performance, improves pruning efficiency
+        search_order = [3, 2, 4, 1, 5, 0, 6]
+        valid_locations.sort(key=lambda x: search_order.index(x))
 
         if depth == 0 or len(valid_locations) == 0:
             return self.__evaluate_board(), None
 
         if maximizing_player:
             value = -math.inf
-            best_col = choice(valid_locations)
+            best_col = valid_locations[0]
             for col in valid_locations:
                 row = self.__board.place_piece(col, self.COMPUTER_KEY)
                 # Check for immediate win, optimize by returning early
@@ -224,7 +227,7 @@ class Game:
             return value, best_col
         else:
             value = math.inf
-            best_col = choice(valid_locations)
+            best_col = valid_locations[0]
             opponent = self.PLAYER_KEY
             for col in valid_locations:
                 row = self.__board.place_piece(col, opponent)
@@ -257,8 +260,10 @@ class Game:
         opp_piece = self.PLAYER_KEY  # 1
 
         # Score center column higher (statistically better position)
-        center_array = [row[3] for row in board]
-        center_count = center_array.count(my_piece)
+        center_count = 0
+        for r in range(6):
+            if board[r][3] == my_piece:
+                center_count += 1
         score += center_count * 3
 
         # Score all possible windows of 4
@@ -294,12 +299,20 @@ class Game:
         :param opp_piece: Opponent piece value (1)
         :return: score for the window
         """
-        score = 0
-        window = [board[r + i * dr][c + i * dc] for i in range(4)]
-        my_count = window.count(my_piece)
-        empty_count = window.count(Board.EMPTY)
-        opp_count = window.count(opp_piece)
+        my_count = 0
+        opp_count = 0
+        empty_count = 0
 
+        for i in range(4):
+            val = board[r + i * dr][c + i * dc]
+            if val == my_piece:
+                my_count += 1
+            elif val == opp_piece:
+                opp_count += 1
+            else:
+                empty_count += 1
+
+        score = 0
         if my_count == 4:
             score += 100
         elif my_count == 3 and empty_count == 1:
