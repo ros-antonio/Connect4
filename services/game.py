@@ -28,6 +28,7 @@ class Game:
         self.__difficulty = difficulty if difficulty in ['easy', 'medium', 'hard'] else 'hard'
         # for AI last move tracking
         self.__last_move = None
+        self.__transposition_table = {}
 
     def set_difficulty(self, level):
         """
@@ -202,6 +203,15 @@ class Game:
         search_order = [3, 2, 4, 1, 5, 0, 6]
         valid_locations.sort(key=lambda x: search_order.index(x))
 
+        board_tuple = tuple(tuple(row) for row in self.__board.get_board())
+        state_key = (board_tuple, maximizing_player)
+
+        # If we've seen this exact board at a deeper or equal depth, use the saved score
+        if state_key in self.__transposition_table:
+            stored_depth, stored_score = self.__transposition_table[state_key]
+            if stored_depth >= depth:
+                return stored_score, None
+
         if depth == 0 or len(valid_locations) == 0:
             return self.__evaluate_board(), None
 
@@ -224,6 +234,7 @@ class Game:
                 alpha = max(alpha, value)
                 if alpha >= beta:
                     break  # Beta cut-off
+            self.__transposition_table[state_key] = (depth, value)
             return value, best_col
         else:
             value = math.inf
@@ -245,6 +256,7 @@ class Game:
                 beta = min(beta, value)
                 if alpha >= beta:
                     break  # Alpha cut-off
+            self.__transposition_table[state_key] = (depth, value)
             return value, best_col
 
     def __evaluate_board(self):
