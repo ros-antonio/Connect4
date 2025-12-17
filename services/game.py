@@ -185,7 +185,7 @@ class Game:
         :return: A valid column index for the AI's move.
         """
         # Minimax to depth 6 for a balance between performance and decision quality
-        score, col = self.__minimax(6, -math.inf, math.inf, True)
+        score, col = self.__minimax(7, -math.inf, math.inf, True)
         return col
 
     def __minimax(self, depth, alpha, beta, maximizing_player):
