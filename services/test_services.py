@@ -17,7 +17,6 @@ class ServicesTest(TestCase):
 
         # Winning move
         self.__game.make_move(0)
-        from domain.board import Board
         self.assertEqual(self.__game.check_winner(Board.PLAYER, 2, 0), True)
 
     def test_is_full(self):

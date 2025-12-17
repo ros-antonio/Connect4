@@ -7,7 +7,7 @@ A classic Connect Four game implemented in Python using `tkinter`. This project 
 * **Smart AI:** Challenge a computer opponent with three difficulty levels:
     * **Easy:** Makes random moves.
     * **Medium:** Blocks your winning moves and seizes immediate wins.
-    * **Hard:** Uses Minimax with Alpha-Beta pruning to look 6 moves ahead.
+    * **Hard:** Uses Minimax with Alpha-Beta pruning to look 7 moves ahead.
 * **Interactive GUI:** * Classic Blue board with Red (Player) and Yellow (Computer) tokens.
     * **Ghost Piece:** Hover over columns to see exactly where your piece will land.
     * **Move Highlight:** The computer's last move is highlighted with a green contour for better visibility.
