@@ -1,63 +1,76 @@
 # 🔴 Connect 4: Turbo Edition (Python + C++)
 
-A high-performance Connect Four game featuring a polished Python `tkinter` GUI powered by a **compiled C++ backend**.
+A high-performance implementation of the classic Connect Four strategy game, featuring a polished Python `tkinter` GUI backed by a **compiled C++ calculation engine**.
 
-This project demonstrates a hybrid architecture: the game logic and UI run in Python for flexibility, while the AI computation is offloaded to a custom C++ engine (`pybind11`) for maximum speed.
+This project utilizes a hybrid architecture: application logic, state management, and the user interface are implemented in Python for flexibility, while computationally intensive AI decision-making is offloaded to a custom C++ module via `pybind11` for optimal execution speed.
 
-## 🚀 Features
+## 🚀 Key Features
 
-* **Hybrid Engine:**
-    * **Python:** Handles UI, state management, and easier AI levels.
-    * **C++:** Handles the "Hard" and "Impossible" AI using a highly optimized Minimax algorithm with Alpha-Beta pruning.
-* **4 Difficulty Levels:**
-    * **Easy:** Random moves (for kids).
-    * **Medium:** Blocks winning moves and takes immediate wins.
-    * **Hard:** Uses C++ engine (Depth 5) for tactical play.
-    * **Impossible:** Uses C++ engine (Depth 9) for **god-like play**. Calculates ~40 million positions instantly.
-* **Zero-Setup Install:** The repository includes a pre-compiled binary wheel. The game automatically installs the C++ engine when you run it—**no compiler required.**
-* **Interactive GUI:**
-    * **Ghost Piece:** Hover over columns to see exactly where your piece will land.
-    * **Live Updates:** Highlights the last move for clarity.
-    * **Menu System:** Change difficulty on the fly.
+* **Hybrid Computation Engine:**
+    * **Python Frontend:** Manages the user interface, game loop, and heuristics for lower difficulty levels.
+    * **C++ Backend:** Powers the "Hard" and "Impossible" difficulty settings using a highly optimized Minimax algorithm with Alpha-Beta pruning.
+* **Adaptive Difficulty Levels:**
+    * **Easy:** Executes random valid moves (introductory level).
+    * **Medium:** Prioritizes immediate defensive blocks and winning opportunities (heuristic-based).
+    * **Hard:** Utilizes the C++ engine at **Depth 5** for strong tactical gameplay.
+    * **Impossible:** Utilizes the C++ engine at **Depth 9**, analyzing approximately 40 million positions instantly for near-perfect play.
+* **Smart Installation System:** The application includes a self-installing script.
+    * **Windows:** Installs a pre-compiled binary wheel (no compiler required).
+    * **Mac/Linux:** Automatically compiles the engine from source upon first launch.
+* **Enhanced User Interface:**
+    * **Visual Aids:** Includes "Ghost Piece" indicators for move prediction and highlights the most recent move.
+    * **Dynamic Configuration:** Allows users to modify difficulty settings seamlessly during gameplay via the menu system.
 
-## 📸 Screenshots
+## 📸 Interface
 
 <img src="game_ss.png" width="40%" alt="Connect Four Game Board">
 
-## 🛠️ Architecture
+## 🛠️ System Architecture
 
-This project uses a layered architecture to separate concerns:
+The project adheres to a layered architecture to ensure separation of concerns:
 
-* **UI Layer (`ui/`):** Tkinter-based interface.
-* **Service Layer (`services/`):** Game coordinator (`game.py`) that syncs the Python board with the C++ engine.
-* **Core Engine (`services/connect4_core.cpp`):** The heavy lifter. A raw C++ implementation of the game rules and Minimax algorithm, exposed to Python via `pybind11`.
+* **Presentation Layer (`ui/`):** Manages the graphical interface and user interactions using Tkinter.
+* **Service Layer (`services/`):** Acts as the controller, synchronizing the Python game state with the C++ backend logic (`game.py`).
+* **Core Engine (`services/connect4_core.cpp`):** The high-performance core. A pure C++ implementation of the game rules and Minimax algorithm, exposed to the Python environment via `pybind11` bindings.
 
-## 📦 Installation & Running
+## 📦 Installation & Usage
 
-**Prerequisites:** Python 3.10+ (Windows Recommended for pre-built binaries)
+**Prerequisites:** Python 3.10+
 
-1.  **Clone the repository:**
+1.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/ros-antonio/Connect4.git
+    git clone [https://github.com/ros-antonio/Connect4.git](https://github.com/ros-antonio/Connect4.git)
     cd Connect4
     ```
 
-2.  **Create a Virtual Environment (Recommended):**
+2.  **Initialize Virtual Environment (Recommended):**
     ```bash
     python -m venv .venv
     # Windows:
     .venv\Scripts\activate
-    # Mac/Linux:
+    # macOS/Linux:
     source .venv/bin/activate
     ```
 
-3.  **Run the Game:**
-    You do **not** need to manually compile the C++ code. The script detects your OS and installs the engine automatically.
+3.  **Launch the Application:**
+    Run the entry script to initialize the game. This script handles the installation of the C++ engine automatically.
     ```bash
     python start.py
     ```
-    *First run may take a few seconds to install the engine.*
+    * **Windows:** The game will launch immediately using the included binary.
+    * **Mac/Linux:** The first run may take a few seconds to compile the engine.
+
+## ❓ Troubleshooting
+
+* **Windows: "Script cannot be loaded / Access Denied"**
+  If you see a security error when activating the virtual environment, this is a default PowerShell setting. You can fix it by running this command in PowerShell once:
+  `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+
+* **Mac/Linux: "Could not compile the engine"**
+  If the automatic compilation fails, ensure you have standard C++ build tools installed:
+    * **macOS:** Run `xcode-select --install` in your terminal.
+    * **Linux:** Ensure `g++` is installed (e.g., `sudo apt install build-essential`).
 
 ## 📝 License
 
-This project is open-source and available under the MIT License.
+This project is open-source software licensed under the MIT License.
