@@ -39,7 +39,7 @@ The project adheres to a layered architecture to ensure separation of concerns:
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/ros-antonio/Connect4.git](https://github.com/ros-antonio/Connect4.git)
+    git clone https://github.com/ros-antonio/Connect4.git
     cd Connect4
     ```
 
