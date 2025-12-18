@@ -3,6 +3,8 @@ from tkinter import messagebox
 from services.game import Game
 from exceptions import InvalidMove
 from domain.board import Board
+import sys
+import os
 
 # Mapping piece values to colors
 # Board.EMPTY = 0 (white), Board.PLAYER = 1 (red), Board.COMPUTER = -1 (yellow)
@@ -21,6 +23,27 @@ class Gui:
         """Initializes the main GUI window and game state."""
         self.root = tk.Tk()
         self.root.title("Connect Four")
+
+        try:
+            # 1. Determine base path
+            if getattr(sys, 'frozen', False):
+                # We are running as an EXE (PyInstaller)
+                # The icon is extracted to the temporary _MEIPASS folder
+                base_path = sys._MEIPASS
+            else:
+                # We are running as a normal script
+                # The icon is likely one level up from 'ui/' folder
+                base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+            # 2. Construct full path
+            icon_path = os.path.join(base_path, "Icon.ico")
+
+            # 3. Apply icon
+            self.root.iconbitmap(icon_path)
+
+        except Exception as e:
+            print(f"Warning: Could not load icon: {e}")
+            # Game continues with default icon if this fails
         self.root.resizable(False, False)
 
         self.rows = 6
