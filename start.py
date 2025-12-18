@@ -13,14 +13,14 @@ def ensure_cpp_engine_installed():
     if importlib.util.find_spec("connect4_core") is not None:
         return  # Already installed!
 
-    print("C++ Engine not found. Installing pre-compiled wheel...")
+    print("C++ Engine for Connect4 not found. Installing pre-compiled wheel...")
 
     # Define path to the 'wheels' folder relative to this script
     base_dir = os.path.dirname(os.path.abspath(__file__))
     wheel_dir = os.path.join(base_dir, 'wheels')
 
     if not os.path.exists(wheel_dir):
-        print(f"❌ Error: Could not find 'wheels' folder at: {wheel_dir}")
+        print(f"Error: Could not find 'wheels' folder at: {wheel_dir}")
         print("Please ensure you have downloaded the full repository.")
         sys.exit(1)
 
