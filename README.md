@@ -1,25 +1,40 @@
-# Connect 4 with Minimax AI
+# 🔴 Connect 4: Turbo Edition (Python + C++)
 
-A classic Connect Four game implemented in Python using `tkinter`. This project features a polished graphical user interface (GUI) and a smart AI opponent powered by the Minimax algorithm with Alpha-Beta pruning.
+A high-performance Connect Four game featuring a polished Python `tkinter` GUI powered by a **compiled C++ backend**.
 
-## 🎮 Features
+This project demonstrates a hybrid architecture: the game logic and UI run in Python for flexibility, while the AI computation is offloaded to a custom C++ engine (`pybind11`) for maximum speed.
 
-* **Smart AI:** Challenge a computer opponent with three difficulty levels:
-    * **Easy:** Makes random moves.
-    * **Medium:** Blocks your winning moves and seizes immediate wins.
-    * **Hard:** Uses Minimax with Alpha-Beta pruning to look 7 moves ahead.
-* **Interactive GUI:** * Classic Blue board with Red (Player) and Yellow (Computer) tokens.
+## 🚀 Features
+
+* **Hybrid Engine:**
+    * **Python:** Handles UI, state management, and easier AI levels.
+    * **C++:** Handles the "Hard" and "Impossible" AI using a highly optimized Minimax algorithm with Alpha-Beta pruning.
+* **4 Difficulty Levels:**
+    * **Easy:** Random moves (for kids).
+    * **Medium:** Blocks winning moves and takes immediate wins.
+    * **Hard:** Uses C++ engine (Depth 5) for tactical play.
+    * **Impossible:** Uses C++ engine (Depth 9) for **god-like play**. Calculates ~40 million positions instantly.
+* **Zero-Setup Install:** The repository includes a pre-compiled binary wheel. The game automatically installs the C++ engine when you run it—**no compiler required.**
+* **Interactive GUI:**
     * **Ghost Piece:** Hover over columns to see exactly where your piece will land.
-    * **Move Highlight:** The computer's last move is highlighted with a green contour for better visibility.
-    * **Menu Bar:** Change difficulty mid-game or start a new game instantly.
-* **Clean Architecture:** Code is organized into Domain, Services, and UI layers for maintainability.
-* **Robust Testing:** ~100% test coverage on core logic.
+    * **Live Updates:** Highlights the last move for clarity.
+    * **Menu System:** Change difficulty on the fly.
 
 ## 📸 Screenshots
 
 <img src="game_ss.png" width="40%" alt="Connect Four Game Board">
 
-## 🛠️ Installation
+## 🛠️ Architecture
+
+This project uses a layered architecture to separate concerns:
+
+* **UI Layer (`ui/`):** Tkinter-based interface.
+* **Service Layer (`services/`):** Game coordinator (`game.py`) that syncs the Python board with the C++ engine.
+* **Core Engine (`services/connect4_core.cpp`):** The heavy lifter. A raw C++ implementation of the game rules and Minimax algorithm, exposed to Python via `pybind11`.
+
+## 📦 Installation & Running
+
+**Prerequisites:** Python 3.10+ (Windows Recommended for pre-built binaries)
 
 1.  **Clone the repository:**
     ```bash
@@ -27,15 +42,22 @@ A classic Connect Four game implemented in Python using `tkinter`. This project 
     cd Connect4
     ```
 
-2.  **Install Dependencies:**
-    The game relies mostly on Python's standard library (`tkinter`, `math`, `random`). The only external dependency is for testing (`coverage`).
+2.  **Create a Virtual Environment (Recommended):**
     ```bash
-    pip install -r requirements.txt
+    python -m venv .venv
+    # Windows:
+    .venv\Scripts\activate
+    # Mac/Linux:
+    source .venv/bin/activate
     ```
 
-## 🚀 How to Run
+3.  **Run the Game:**
+    You do **not** need to manually compile the C++ code. The script detects your OS and installs the engine automatically.
+    ```bash
+    python start.py
+    ```
+    *First run may take a few seconds to install the engine.*
 
-To start the game, simply run the `start.py` file from the root directory:
+## 📝 License
 
-```bash
-python start.py
+This project is open-source and available under the MIT License.

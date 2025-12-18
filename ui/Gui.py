@@ -7,9 +7,9 @@ from domain.board import Board
 # Mapping piece values to colors
 # Board.EMPTY = 0 (white), Board.PLAYER = 1 (red), Board.COMPUTER = -1 (yellow)
 PIECE_MAP = {
-    Board.EMPTY: 'white',      # 0
-    Board.PLAYER: 'red',        # 1
-    Board.COMPUTER: 'yellow'    # -1
+    Board.EMPTY: 'white',  # 0
+    Board.PLAYER: 'red',  # 1
+    Board.COMPUTER: 'yellow'  # -1
 }
 
 
@@ -49,13 +49,15 @@ class Gui:
         game_menu.add_command(label="Exit", command=self.root.quit)
         menubar.add_cascade(label="Game", menu=game_menu)
 
-        # Difficulty Menu (Easy, Medium, Hard) - can be changed anytime in the game
+        # Difficulty Menu (Easy, Medium, Hard, Impossible) - can be changed anytime in the game
         diff_menu = tk.Menu(menubar, tearoff=0)
         diff_menu.add_radiobutton(label="Easy", variable=self.difficulty_var, value="easy",
                                   command=self.change_difficulty)
         diff_menu.add_radiobutton(label="Medium", variable=self.difficulty_var, value="medium",
                                   command=self.change_difficulty)
         diff_menu.add_radiobutton(label="Hard", variable=self.difficulty_var, value="hard",
+                                  command=self.change_difficulty)
+        diff_menu.add_radiobutton(label="Impossible", variable=self.difficulty_var, value="impossible",
                                   command=self.change_difficulty)
         menubar.add_cascade(label="Difficulty", menu=diff_menu)
 
