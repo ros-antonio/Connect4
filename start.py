@@ -8,9 +8,17 @@ import os
 def ensure_cpp_engine_installed():
     """
     Checks if connect4_core is installed.
-    1. Tries to install a pre-compiled wheel from the 'wheels' folder (Fast/Windows).
-    2. If that fails, attempts to compile from source (Mac/Linux).
+    1. If it is an .exe (frozen), skips installation.
+    2. Tries to install a pre-compiled wheel from the 'wheels' folder (Fast/Windows).
+    3. If that fails, attempts to compile from source (Mac/Linux).
     """
+
+    if getattr(sys, 'frozen', False):
+        # If we are an .exe, PyInstaller has already bundled the C++ engine.
+        # We do NOT want to try running pip.
+        print("Running in Frozen (EXE) mode. Skipping installation checks.")
+        return
+
     if importlib.util.find_spec("connect4_core") is not None:
         return  # Already installed!
 

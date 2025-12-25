@@ -13,7 +13,7 @@ This project utilizes a hybrid architecture: application logic, state management
     * **Easy:** Executes random valid moves (introductory level).
     * **Medium:** Prioritizes immediate defensive blocks and winning opportunities (heuristic-based).
     * **Hard:** Utilizes the C++ engine at **Depth 5** for strong tactical gameplay.
-    * **Impossible:** Utilizes the C++ engine at **Depth 9**, analyzing approximately 40 million positions instantly for near-perfect play.
+    * **Impossible:** Uses C++ engine at **Depth 9** to solve a ~40 million move search space almost instantly via Alpha-Beta pruning optimizations.
 * **Smart Installation System:** The application includes a self-installing script.
     * **Windows:** Installs a pre-compiled binary wheel (no compiler required).
     * **Mac/Linux:** Automatically compiles the engine from source upon first launch.
@@ -23,7 +23,7 @@ This project utilizes a hybrid architecture: application logic, state management
 
 ## 📸 Interface
 
-<img src="game_ss.png" width="40%" alt="Connect Four Game Board">
+<img src="game_ss.png" width="50%" alt="Connect Four Game Board">
 
 ## 🛠️ System Architecture
 
