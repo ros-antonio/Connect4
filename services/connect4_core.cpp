@@ -175,7 +175,7 @@ public:
             return abs(a - 3) < abs(b - 3);
         });
         int best_col = -1;
-        int best_score = (piece == COMPUTER) ? -1000000 : 100000;
+        int best_score = (piece == COMPUTER) ? -2000000 : 200000;
         if (valid_moves.empty()) return {0, -1};
 
         for (int col : valid_moves)
@@ -223,6 +223,10 @@ public:
         }
         if (best_col == -1 && !valid_moves.empty())
             best_col = valid_moves[0];
+
+        if (depth == 9) {
+                std::cout << "Best choice: Col " << best_col << " with score " << best_score << std::endl;
+            }
         return {best_score, best_col};
     }
 };
