@@ -223,10 +223,6 @@ public:
         }
         if (best_col == -1 && !valid_moves.empty())
             best_col = valid_moves[0];
-
-        if (depth == 9) {
-                std::cout << "Best choice: Col " << best_col << " with score " << best_score << std::endl;
-            }
         return {best_score, best_col};
     }
 };
