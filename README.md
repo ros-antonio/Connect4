@@ -1,13 +1,13 @@
-# 🔴 Connect 4: Turbo Edition (Python + C++)
+#  Connect 4 (Python + C++)
 
 A high-performance implementation of the classic Connect Four strategy game, featuring a polished Python `tkinter` GUI backed by a **compiled C++ calculation engine**.
 
 This project utilizes a hybrid architecture: application logic, state management, and the user interface are implemented in Python for flexibility, while computationally intensive AI decision-making is offloaded to a custom C++ module via `pybind11` for optimal execution speed.
 
-## 🚀 Key Features
+## Key Features
 
 * **Hybrid Computation Engine:**
-    * **Python Frontend:** Manages the user interface, game loop, and heuristics for lower difficulty levels.
+    * **Python Frontend:** Manages the user interface, game loop, and logics for lower difficulty levels.
     * **C++ Backend:** Powers the "Hard" and "Impossible" difficulty settings using a highly optimized Minimax algorithm with Alpha-Beta pruning.
 * **Adaptive Difficulty Levels:**
     * **Easy:** Executes random valid moves (introductory level).
@@ -21,11 +21,11 @@ This project utilizes a hybrid architecture: application logic, state management
     * **Visual Aids:** Includes "Ghost Piece" indicators for move prediction and highlights the most recent move.
     * **Dynamic Configuration:** Allows users to modify difficulty settings seamlessly during gameplay via the menu system.
 
-## 📸 Interface
+## Interface
 
 <img src="game_ss.png" width="50%" alt="Connect Four Game Board">
 
-## 🛠️ System Architecture
+## System Architecture
 
 The project adheres to a layered architecture to ensure separation of concerns:
 
@@ -33,7 +33,7 @@ The project adheres to a layered architecture to ensure separation of concerns:
 * **Service Layer (`services/`):** Acts as the controller, synchronizing the Python game state with the C++ backend logic (`game.py`).
 * **Core Engine (`services/connect4_core.cpp`):** The high-performance core. A pure C++ implementation of the game rules and Minimax algorithm, exposed to the Python environment via `pybind11` bindings.
 
-## 📦 Installation & Usage
+## Installation & Usage
 
 **Prerequisites:** Python 3.10+
 
@@ -60,7 +60,7 @@ The project adheres to a layered architecture to ensure separation of concerns:
     * **Windows:** The game will launch immediately using the included binary.
     * **Mac/Linux:** The first run may take a few seconds to compile the engine.
 
-## ❓ Troubleshooting
+## Troubleshooting
 
 * **Windows: "Script cannot be loaded / Access Denied"**
   If you see a security error when activating the virtual environment, this is a default PowerShell setting. You can fix it by running this command in PowerShell once:
@@ -71,6 +71,6 @@ The project adheres to a layered architecture to ensure separation of concerns:
     * **macOS:** Run `xcode-select --install` in your terminal.
     * **Linux:** Ensure `g++` is installed (e.g., `sudo apt install build-essential`).
 
-## 📝 License
+## License
 
 This project is open-source software licensed under the MIT License.
